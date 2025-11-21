@@ -1,16 +1,37 @@
-<!DOCTYPE html><html><body><h2>Login</h2>
-<form id='f'>
-<input name='email'><br><input name='password' type='password'><br>
-<button>Login</button></form>
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Login</h2>
+<form id="f">
+  <input name="email" placeholder="Email"><br>
+  <input name="password" type="password" placeholder="Password"><br>
+  <button type="submit">Login</button>
+</form>
+
+<!-- Register button -->
+<button id="registerBtn">Register</button>
+
 <script>
-document.getElementById('f').onsubmit=async e=>{
- e.preventDefault();
- const f=e.target;
- const r=await fetch('/api/auth/login',{method:'POST',
- headers:{'Content-Type':'application/json'},
- body:JSON.stringify({email:f.email.value,password:f.password.value})});
- const d=await r.json();
- if(d.token){localStorage.setItem('token',d.token);location='home.html';}
- else alert(d.error);
+const form = document.getElementById('f');
+form.onsubmit = async e => {
+  e.preventDefault();
+  const f = e.target;
+  const res = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({email: f.email.value, password: f.password.value})
+  });
+  const data = await res.json();
+  if(data.token){
+    localStorage.setItem('token', data.token);
+    location.href = 'home.html';
+  } else alert(data.error);
 };
-</script></body></html>
+
+// Register button click
+document.getElementById('registerBtn').onclick = () => {
+  location.href = 'register.html';
+};
+</script>
+</body>
+</html>

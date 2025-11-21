@@ -27,6 +27,11 @@ app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/login.html'));
 });
+// Register route serves register page
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/register.html'));
+});
+
 
 // API routes
 app.use('/api/auth', authRouter);
