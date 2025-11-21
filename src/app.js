@@ -17,7 +17,9 @@ app.use(morgan('dev'));
 app.use(express.static('public'));
 
 app.get('/health', (req,res)=>res.json({status:'ok'}));
-
+app.get('/', (req, res) => {
+  res.redirect('/login.html');
+});
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/home', homeRouter);
