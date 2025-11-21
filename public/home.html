@@ -1,11 +1,46 @@
-<!DOCTYPE html><html><body><h2>Home</h2>
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Home</h2>
 <div id='msg'>Loading...</div>
+<button id="logoutBtn">Logout</button>
+
 <script>
-(async ()=>{
- const t=localStorage.getItem('token');
- if(!t){location='login.html';return;}
- const r=await fetch('/api/home',{headers:{'Authorization':'Bearer '+t}});
- const d=await r.json();
- document.getElementById('msg').innerText=d.message||d.error;
+(async () => {
+  const t = localStorage.getItem('token');
+
+  if (!t) {
+    // No token → redirect to login
+    location.href = '/';
+    return;
+  }
+
+  try {
+    const r = await fetch('/api/home', {
+      headers: { 'Authorization': 'Bearer ' + t }
+    });
+
+    if (r.status === 401) {
+      // Invalid token → remove it and redirect
+      localStorage.removeItem('token');
+      location.href = '/';
+      return;
+    }
+
+    const d = await r.json();
+    document.getElementById('msg').innerText = d.message || d.error;
+  } catch (err) {
+    console.error('Fetch error:', err);
+    localStorage.removeItem('token');
+    location.href = '/';
+  }
 })();
-</script></body></html>
+
+// Optional logout button
+document.getElementById('logoutBtn').onclick = () => {
+  localStorage.removeItem('token');
+  location.href = '/';
+};
+</script>
+</body>
+</html>

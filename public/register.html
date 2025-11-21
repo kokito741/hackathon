@@ -20,7 +20,7 @@ document.getElementById('f').onsubmit = async (e) => {
     })
   });
   const data = await res.json();
-  if (data.message === 'registered') location.href='login.html';
+  if (data.message === 'registered') location.href='/';
   else alert(data.error);
 };
 </script>

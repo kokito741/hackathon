@@ -24,13 +24,13 @@ form.onsubmit = async e => {
   const data = await res.json();
   if(data.token){
     localStorage.setItem('token', data.token);
-    location.href = 'home.html';
+    location.href = '/home';
   } else alert(data.error);
 };
 
 // Register button click
 document.getElementById('registerBtn').onclick = () => {
-  location.href = 'register.html';
+  location.href = '/register';
 };
 </script>
 </body>
