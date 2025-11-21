@@ -1,0 +1,16 @@
+<!DOCTYPE html><html><body><h2>Login</h2>
+<form id='f'>
+<input name='email'><br><input name='password' type='password'><br>
+<button>Login</button></form>
+<script>
+document.getElementById('f').onsubmit=async e=>{
+ e.preventDefault();
+ const f=e.target;
+ const r=await fetch('/api/auth/login',{method:'POST',
+ headers:{'Content-Type':'application/json'},
+ body:JSON.stringify({email:f.email.value,password:f.password.value})});
+ const d=await r.json();
+ if(d.token){localStorage.setItem('token',d.token);location='home.html';}
+ else alert(d.error);
+};
+</script></body></html>

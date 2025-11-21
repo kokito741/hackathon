@@ -1,0 +1,17 @@
+<!DOCTYPE html><html><body><h2>Register</h2>
+<form id='f'>
+<input name='name'><br><input name='email'><br>
+<input name='password' type='password'><br>
+<button>Register</button></form>
+<script>
+document.getElementById('f').onsubmit=async e=>{
+ e.preventDefault();
+ const f=e.target;
+ const r=await fetch('/api/auth/register',{method:'POST',
+ headers:{'Content-Type':'application/json'},
+ body:JSON.stringify({name:f.name.value,email:f.email.value,password:f.password.value})});
+ const d=await r.json();
+ if(d.message==='registered') location='login.html';
+ else alert(d.error);
+};
+</script></body></html>

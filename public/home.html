@@ -1,0 +1,11 @@
+<!DOCTYPE html><html><body><h2>Home</h2>
+<div id='msg'>Loading...</div>
+<script>
+(async ()=>{
+ const t=localStorage.getItem('token');
+ if(!t){location='login.html';return;}
+ const r=await fetch('/api/home',{headers:{'Authorization':'Bearer '+t}});
+ const d=await r.json();
+ document.getElementById('msg').innerText=d.message||d.error;
+})();
+</script></body></html>
