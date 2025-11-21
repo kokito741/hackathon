@@ -4,6 +4,7 @@ require('express-async-errors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
+const auth = require('./middleware/auth'); // for auth
 
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
