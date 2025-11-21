@@ -1,28 +1,43 @@
-<!DOCTYPE html><html><body><h2>Register</h2>
-<form id="f">
-  <input name="name">
-  <input name="email">
-  <input name="password" type="password">
-  <button>Register</button>
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Register</h2>
+
+<form id="registerForm">
+  <input name="name" placeholder="Name"><br>
+  <input name="email" placeholder="Email"><br>
+  <input name="password" type="password" placeholder="Password"><br>
+  <button type="submit">Register</button>
 </form>
 
+<button id="loginBtn" type="button">Back to Login</button>
+
 <script>
-document.getElementById('f').onsubmit = async (e) => {
+document.getElementById('registerForm').onsubmit = async (e) => {
   e.preventDefault();
   const f = e.target;
+
   const res = await fetch('/api/auth/register', {
     method: 'POST',
-    headers: {'Content-Type':'application/json'},
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       name: f.name.value,
       email: f.email.value,
       password: f.password.value
     })
   });
+
   const data = await res.json();
-  if (data.message === 'registered') location.href='/';
-  else alert(data.error);
+
+  if(data.message === 'registered'){
+    alert('Registration successful!');
+    location.href = '/';
+  } else {
+    alert(data.error || 'Registration failed');
+  }
 };
+
+document.getElementById('loginBtn').onclick = () => location.href = '/';
 </script>
 
 </body>
