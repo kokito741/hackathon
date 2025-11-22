@@ -124,52 +124,86 @@ Rules:
   return parsed;
 }
 
-// -----------------------------
 // POST /chat (Single AI call)
-// -----------------------------
 router.post('/', auth, async (req, res) => {
   try {
     const userId = req.user.id;
+    const userEmail = req.user.email;
+    const userName = req.user.name;
+
     const { message } = req.body;
 
-    // 1) Log message
+    if (!userEmail) {
+      console.error("ERROR: req.user.email is undefined");
+    }
+
+    // 1) Log user message
     await db.query(
-      "INSERT INTO chat_logs (user_id, message, timestamp) VALUES (?, ?, NOW())",
+      "INSERT INTO chat_logs (user_id, role, message, timestamp) VALUES (?, 'user', ?, NOW())",
       [userId, message]
     );
 
-    // 2) Load full history
+    // 2) Load chat history
     const [rows] = await db.query(
-      "SELECT message FROM chat_logs WHERE user_id=? ORDER BY timestamp ASC",
+      "SELECT role, message FROM chat_logs WHERE user_id=? ORDER BY timestamp ASC",
       [userId]
     );
 
-    const chatLog = rows.map(r => r.message).join("\n");
+    const chatLog = rows.map(r => `${r.role}: ${r.message}`).join("\n");
 
-    // 3) Compute algorithmic risk (optional)
-    const algoRisk = computeAlgorithmRisk(chatLog);
+    // 3) Numeric risk mapping
+    const RISK = { low: 1, medium: 2, high: 3 };
 
-    // 4) ONE AI CALL → reply + risk + reason
+    const algoStr = computeAlgorithmRisk(chatLog);     // "low" | "medium" | "high"
+    const algorithm_score = RISK[algoStr];
+
+    // 4) AI call
     const ai = await getAiChatAndRisk(chatLog, message);
+    const ai_score = RISK[ai.risk];
 
-    // 5) If high risk → Pushover alert
-    if (ai.risk === "high" || algoRisk === "high") {
+    const final_risk = Math.max(algorithm_score, ai_score);
+
+    // 5) Store risk
+    const [riskResult] = await db.query(
+      `INSERT INTO risk_assessments 
+       (user_id, algorithm_score, ai_score, ai_reason, final_risk, created_at)
+       VALUES (?, ?, ?, ?, ?, NOW())`,
+      [userId, algorithm_score, ai_score, ai.reason, final_risk]
+    );
+
+    const riskAssessmentId = riskResult.insertId;
+
+    // 6) Log assistant reply
+    await db.query(
+      "INSERT INTO chat_logs (user_id, role, message, timestamp) VALUES (?, 'assistant', ?, NOW())",
+      [userId, ai.assistant]
+    );
+
+    // 7) High risk alert
+    if (final_risk === 3) {
       await sendPushoverAlert({
-        username: req.user.name,   // FIXED
-        email: req.user.email,     // FIXED
-        algoRisk,
+        username: userName,
+        email: userEmail,
+        algoRisk: algoStr,
         aiRisk: ai.risk,
         aiReason: ai.reason,
         chatLog
       });
+
+      await db.query(
+        `INSERT INTO alerts_sent 
+         (user_id, risk_assessment_id, sent_to, sent_at)
+         VALUES (?, ?, ?, NOW())`,
+        [userId, riskAssessmentId, userEmail]
+      );
     }
 
-    // 6) Send to frontend
+    // 8) Response
     res.json({
       assistant: ai.assistant,
       risk: ai.risk,
       reason: ai.reason,
-      algoRisk
+      algoRisk: algoStr
     });
 
   } catch (err) {
