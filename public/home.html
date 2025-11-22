@@ -8,21 +8,18 @@
 <script>
 (async () => {
   const t = localStorage.getItem('token');
-
   if (!t) {
-    // No token → redirect to login
     location.href = '/';
     return;
   }
 
   try {
+    console.log('Token being sent to /api/home:', t);
     const r = await fetch('/api/home', {
       headers: { 'Authorization': 'Bearer ' + t }
-      
     });
-    console.log('Token being sent:', t);
+
     if (r.status === 401) {
-      // Invalid token → remove it and redirect
       localStorage.removeItem('token');
       location.href = '/';
       return;
@@ -37,7 +34,7 @@
   }
 })();
 
-// Optional logout button
+// Logout
 document.getElementById('logoutBtn').onclick = () => {
   localStorage.removeItem('token');
   location.href = '/';

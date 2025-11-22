@@ -7,12 +7,22 @@
   <input name="password" type="password" placeholder="Password"><br>
   <button type="submit">Login</button>
 </form>
-
-<!-- Register button -->
 <button id="registerBtn" type="button">Register</button>
 
 <script>
 const form = document.getElementById('f');
+
+// Clear any old token on page load
+try {
+  const oldToken = localStorage.getItem('token');
+  if (oldToken) {
+    localStorage.removeItem('token');
+    console.log('Old token cleared:', oldToken);
+  }
+} catch(e) {
+  console.error('Cannot access localStorage:', e);
+}
+
 form.onsubmit = async e => {
   e.preventDefault();
   const f = e.target;
@@ -24,11 +34,12 @@ form.onsubmit = async e => {
   const data = await res.json();
   if(data.token){
     localStorage.setItem('token', data.token);
+    console.log('New token stored:', data.token);
     location.href = '/home';
   } else alert(data.error);
 };
 
-// Register button click
+// Register button
 document.getElementById('registerBtn').onclick = () => {
   location.href = '/register';
 };
