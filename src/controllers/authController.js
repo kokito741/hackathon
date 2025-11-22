@@ -19,7 +19,15 @@ exports.login = async (req,res)=>{
   const ok = await bcrypt.compare(password,user.password);
   if(!ok) return res.status(400).json({error:'invalid creds'});
   const jwtSecret = process.env.JWT_SECRET || 'localdevsecret123';
-  const token = jwt.sign({ id: user.id, name: user.name }, jwtSecret, { expiresIn:'2h' });  console.log('Login generated token:', token);
+  const token = jwt.sign(
+  {
+    id: user.id,
+    name: user.name,
+    email: user.email,        // ADD THIS
+  },
+  jwtSecret,
+  { expiresIn: '2h' }
+);
   console.log('Secret used:', process.env.JWT_SECRET);
   res.json({message:'logged in',token});
 };

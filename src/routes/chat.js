@@ -155,8 +155,8 @@ router.post('/', auth, async (req, res) => {
     // 5) If high risk → Pushover alert
     if (ai.risk === "high" || algoRisk === "high") {
       await sendPushoverAlert({
-        username: req.user.username,
-        email: req.user.email,
+        username: req.user.name,   // FIXED
+        email: req.user.email,     // FIXED
         algoRisk,
         aiRisk: ai.risk,
         aiReason: ai.reason,
