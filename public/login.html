@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html>
+<head>
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<title>Login</title>
+</head>  
 <body>
 <h2>Login</h2>
 <form id="f">
-  <input name="email" placeholder="Email"><br>
-  <input name="password" type="password" placeholder="Password"><br>
+  <input name="email" placeholder="Email">Email<br>
+  <input name="password" type="password" placeholder="Password">password<br>
   <button type="submit">Login</button>
 </form>
 <button id="registerBtn" type="button">Register</button>
 
 <script>
 const form = document.getElementById('f');
-
+window.addEventListener('error', e => {
+  if(e.message.includes('__cf_bm')) e.preventDefault();
+});
 // Clear any old token on page load
 try {
   const oldToken = localStorage.getItem('token');

@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html>
+<head>
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<title>Home</title>
+</head> 
 <body>
 <h2>Home</h2>
 <div id='msg'>Loading...</div>
@@ -33,7 +38,9 @@
     location.href = '/';
   }
 })();
-
+window.addEventListener('error', e => {
+  if(e.message.includes('__cf_bm')) e.preventDefault();
+});
 // Logout
 document.getElementById('logoutBtn').onclick = () => {
   localStorage.removeItem('token');
