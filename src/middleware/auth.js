@@ -5,5 +5,7 @@ module.exports=(req,res,next)=>{
   try{
     req.user=jwt.verify(h.split(' ')[1], process.env.JWT_SECRET);
     next();
-  }catch(e){ res.status(401).json({error:'invalid token'}); }
+  }catch(e){ res.status(401).json({error:'invalid token'}); 
+  res.redirect('/');
+}
 };
