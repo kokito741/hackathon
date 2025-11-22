@@ -1,153 +1,18 @@
 
-# Node.js Hackathon Template
+# Кратко описание на проекта
+Прототипът представлява уеб базирана система, която позволява на потребител в риск да изпрати дискретен сигнал или съобщение, което автоматично се анализира чрез генеративен изкуствен интелект. Платформата комбинира базов риск алгоритъм с AI оценка, за да определи нивото на опасност. При висок риск системата изпраща незабавно предупреждение до отговорните лица чрез Pushover известие. 
+Интерфейсът е опростен – с HTML страници за бърза навигация, форма за подава­не на сигнал и административен панел за преглед на рисковите случаи. Базата данни съхранява история на съобщенията, оценките и действията, което позволява проследяване на инциденти и подпомага бъдещ анализ.
+# Използвани технологии
+## Backend
+- Node.js + Express – REST API сървър
+- MySQL (mysql2) – база данни
+- bcrypt – сигурност при пароли
+- jsonwebtoken (JWT) – потребителска идентификация
+- ChatGPT API – анализ на риск въз основа на контекст и чат история
+- Pushover – push известия при висок риск
+- Express middleware – защита на маршрути, логване и грешки
 
-### Express + MySQL + JWT Auth + HTML Frontend
-
-## 🚀 Features
-
-* User **registration** with hashed passwords (bcrypt)
-* User **login** with JWT token generation
-* **Protected API** routes using middleware
-* Simple **HTML Frontend** (Login / Register / Home)
-* Clean project structure ideal for a **24h hackathon**
-
----
-
-## 📁 Project Structure
-
-```
-project/
-│  app.js
-│  index.js
-│  package.json
-│  README.md
-│  .env.example
-│
-├─ config/
-│    db.js
-│
-├─ controllers/
-│    authController.js
-│
-├─ middleware/
-│    auth.js
-│    errorHandler.js
-│
-├─ models/
-│    userModel.js
-│
-├─ routes/
-│    auth.js
-│    home.js
-│
-└─ public/
-     login.html
-     register.html
-     home.html
-     style.css
-```
-
----
-
-## 🔧 Installation
-
-Install dependencies:
-
-```bash
-npm install
-```
-
----
-
-## ⚙️ Environment Setup
-
-Create a `.env` file:
-
-```
-PORT=4000
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=your_password
-DB_NAME=hackathon
-JWT_SECRET=supersecret
-```
-
----
-
-## 🏁 Run the Server
-
-```bash
-node index.js
-```
-
-Server will run on:
-
-```
-http://localhost:4000
-```
-
----
-
-## 🧪 API Endpoints
-
-### Register a user
-
-```
-POST /api/register
-```
-
-Body:
-
-```json
-{
-  "name": "Test User",
-  "email": "test@example.com",
-  "password": "123456"
-}
-```
-
-### Login
-
-```
-POST /api/login
-```
-
-Body:
-
-```json
-{
-  "email": "test@example.com",
-  "password": "123456"
-}
-```
-
-Returns:
-
-```json
-{
-  "token": "JWT_TOKEN_HERE"
-}
-```
-
-### Protected home route
-
-```
-GET /api/home
-Authorization: Bearer <token>
-```
-
----
-
-## 🎨 Frontend
-
-Open these files in the browser:
-
-* `public/login.html`
-* `public/register.html`
-* `public/home.html`
-
-They use basic HTML + Fetch API to interact with the backend.
-
----
-
-Just tell me!
+## Frontend
+- Чист HTML + CSS + Fetch API
+- Страници: Login, Register, Home
+- Лек и удобен UX без нужда от SPA framework
