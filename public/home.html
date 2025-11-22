@@ -18,8 +18,9 @@
   try {
     const r = await fetch('/api/home', {
       headers: { 'Authorization': 'Bearer ' + t }
+      
     });
-
+    console.log('Token being sent:', t);
     if (r.status === 401) {
       // Invalid token → remove it and redirect
       localStorage.removeItem('token');
