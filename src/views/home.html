@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SafeAI Chat</title>
+  <link rel="stylesheet" href="/public/styles.css">
+</head>
+<body>
+
+<div class="chat-container">
+    <div id="chat-log"></div>
+
+    <form id="chat-form">
+        <input type="text" id="msg" placeholder="Type message..." required>
+        <button>Send</button>
+    </form>
+</div>
+
+<script>
+async function sendMessage() {
+    const msg = document.getElementById("msg").value;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("No token found! Please log in again.");
+        return;
+    }
+
+    const res = await fetch("/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ message: msg })
+    });
+
+    const data = await res.json();
+    updateChat(msg, data);
+    document.getElementById("msg").value = "";
+}
+
+function updateChat(userMsg, data) {
+    const log = document.getElementById("chat-log");
+
+    // USER MESSAGE
+    log.innerHTML += `<div class='user-msg'><b>You:</b> ${userMsg}</div>`;
+
+    // AI REPLY
+    log.innerHTML += `<div class='ai-msg'><b>AI:</b> ${data.assistant}</div>`;
+
+    // RISK CHECK
+    if (data.risk === "high" || data.algoRisk === "high") {
+        log.innerHTML += `
+            <div class='warning'>
+                ⚠ <b>High Risk Detected</b><br>
+                ${data.reason}
+            </div>
+        `;
+    }
+
+    log.scrollTop = log.scrollHeight;
+}
+
+document.getElementById("chat-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    sendMessage();
+});
+</script>
+
+</body>
+</html>

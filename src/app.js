@@ -24,13 +24,12 @@ app.use(morgan('dev'));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '../public')));
-
+app.use("/public", express.static(path.join(__dirname, "../public")));
 // Health check
-app.get('/health', (req, res) => res.json({ status: 'ok' }));
-
-
+app.use(express.static(path.join(__dirname, '../public')));
+app.use("/chat", require(path.join(__dirname, "routes/chat")));
 // home protected route
-app.get('/home', (req, res) => res.sendFile(path.join(__dirname, '../public/home.html')));
+app.get('/home', (req, res) => res.sendFile(path.join(__dirname, './views/home.html')));
 // Root route serves login page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/login.html'));
